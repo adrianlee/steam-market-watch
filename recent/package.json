@@ -1,0 +1,16 @@
+{
+  "name": "market",
+  "version": "0.0.0",
+  "description": "",
+  "main": "marketwatch.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "lodash": "^2.4.1",
+    "open": "0.0.5",
+    "request": "^2.36.0"
+  }
+}
