@@ -1,0 +1,50 @@
+<div class="row">
+  <div class="col-sm-12">
+    <h3>Your currently watched items</h3>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Item</th>
+          <th>Target Price</th>
+          <th>Current Price</th>
+          <th>Last Updated</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="item in items">
+          <td><a ng-href="{{item.url}}" target="_blank">{{item.name}}</a></td>
+          <td>{{item.targetPrice | currency}}</td>
+          <td>{{item.currentPrice | currency}}</td>
+          <td>{{item.updated | date:'mediumTime'}}</td>
+          <td><a href ng-click="remove(item)">remove</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-sm-12">
+    <h3>Add an item to watch</h3>
+    <form class="form-horizontal" ng-submit="submit()">
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Item URL</label>
+        <div class="col-sm-10">
+          <input type="text" class="form-control" placeholder="http://steamcommunity.com/market/listings/730/Glock-18%20%7C%20Fade%20%28Factory%20New%29" ng-model="newItem.url">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="col-sm-2 control-label">Target Price</label>
+        <div class="col-sm-10">
+          <input type="number" class="form-control" placeholder="5.5" ng-model="newItem.targetPrice">
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <button type="submit" class="btn btn-success btn-block">Save item details</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,14 @@
+doctype html
+html(ng-app="App")
+  head
+    title Teach #{pageName}!
+    link(rel="stylesheet", href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
+    script(type="text/javascript", src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js")
+    script(type="text/javascript", src="//cdn.jsdelivr.net/jquery/2.1.1/jquery.min.js")
+    script(src="static/js/script.js")
+  body
+    div.container
+      h1
+        a(href="#/")
+          span Steam Market Watch
+      div(ng-view)
