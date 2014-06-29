@@ -37,11 +37,11 @@ App.controller('mainController', function($scope, $http) {
     }
 
     addWatcher($scope.newItem);
-    $scope.newItem = {};
   };
 
   $scope.remove = function (item) {
-    $scope.items.splice(item, 1);
+    // console.log(item);
+    $scope.items.splice($scope.items.indexOf(item), 1);
     save();
   }
 
@@ -55,11 +55,24 @@ App.controller('mainController', function($scope, $http) {
       }
     }
 
-    // add item to items list
-    $scope.items.push(newItem);
+    requestUrl(newItem.url, function (price) {
+      newItem.currentPrice = price;
+      newItem.updated = new Date();
 
-    // save items list to localStorage
-    save();
+      if (price > 0) {
+        // add item to items list
+        $scope.items.push(newItem);
+
+        // clear form
+        $scope.newItem = {};
+
+        // save items list to localStorage
+        save();
+      } else {
+        alert("Unable to add item to list. Check your URL.")
+      }
+    });
+    
   }
 
   function save() {

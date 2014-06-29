@@ -77,6 +77,10 @@ function convertPrice(price) {
   if (price.indexOf("£") > -1) {
     return round(unformatedPrice * 1.70);
   }
+
+  if (price.indexOf("pуб") > -1) {
+    return round(unformatedPrice * 0.030);
+  } 
 }
 
 function round(num) {
@@ -102,7 +106,7 @@ module.exports = function (url, cb) {
     if (!prices[0]) return cb(-1);
 
     var convertedPrice = convertPrice(prices[0]);
-
+    console.log(convertedPrice, url)
     cb(convertedPrice);
   });
 };

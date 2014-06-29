@@ -10,7 +10,7 @@ var serverOptions = {
         path: "./views"
     }
 };
-var server = new Hapi.Server("localhost", 8000, serverOptions);
+var server = new Hapi.Server("localhost", 8012, serverOptions);
 
 var checker = require('../page');
 
