@@ -60,6 +60,11 @@ App.controller('mainController', function($scope, $http) {
       newItem.updated = new Date();
 
       if (price > 0) {
+        if (newItem.targetPrice > price) {
+          playSound();
+          alert("PRICE DROP! " + newItem.name + " costs " + price);
+        }
+
         // add item to items list
         $scope.items.push(newItem);
 
@@ -85,10 +90,12 @@ App.controller('mainController', function($scope, $http) {
   }
 
   function requestUrl(url, cb) {
-    $http.get("/check?url="+encodeURIComponent(url)).
-      success(function(data) {
-        cb(data);
-      });
+    setTimeout(function () {
+      $http.get("/check?url="+encodeURIComponent(url)).
+        success(function(data) {
+          cb(data);
+        });
+    }, Math.random()*10000);
   }
 
   function playSound() {
@@ -107,6 +114,7 @@ App.controller('mainController', function($scope, $http) {
             playSound();
             alert("PRICE DROP! " + $scope.items[item].name + " costs " + price);
           }
+
           $scope.items[item].currentPrice = price;
           $scope.items[item].updated = new Date();
           save();
@@ -116,5 +124,5 @@ App.controller('mainController', function($scope, $http) {
   }
 
   setInterval(scan, 25000);
-  scan();
+  setTimeout(scan, 2000)
 });
