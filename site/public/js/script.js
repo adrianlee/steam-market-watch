@@ -112,7 +112,7 @@ App.controller('mainController', function($scope, $http) {
 
           if ($scope.items[item].targetPrice > price) {
             playSound();
-            alert("PRICE DROP! " + $scope.items[item].name + " costs " + price);
+            alert("PRICE DROP! " + $scope.items[item].name + " now costs " + price + " down from " + $scope.items[item].currentPrice);
           }
 
           $scope.items[item].currentPrice = price;
