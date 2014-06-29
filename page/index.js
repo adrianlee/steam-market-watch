@@ -66,6 +66,10 @@ function convertPrice(price) {
 
   var unformatedPrice = accounting.unformat(price);
 
+  if (price.indexOf("R$") > -1) {
+    return round(unformatedPrice * 0.45);
+  }
+
   if (price.indexOf("$") > -1) {
     return unformatedPrice;
   }
@@ -82,9 +86,6 @@ function convertPrice(price) {
     return round(unformatedPrice * 0.030);
   }
 
-  if (price.indexOf("R$") > -1) {
-    return round(unformatedPrice * 0.45);
-  }
 }
 
 function round(num) {
