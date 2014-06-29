@@ -95,6 +95,10 @@ App.controller('mainController', function($scope, $http) {
     for (var item in $scope.items) {
       (function (item) {
         requestUrl($scope.items[item].url, function (price) {
+          if (price == -1 || !price) {
+            return;
+          }
+
           if ($scope.items[item].targetPrice > price) {
             alert("PRICE DROP! " + $scope.items[item].name + " costs " + price);
           }
