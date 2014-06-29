@@ -91,6 +91,10 @@ App.controller('mainController', function($scope, $http) {
       });
   }
 
+  function playSound() {
+    document.getElementById('audiotag1').play();
+  }
+
   function scan() {
     for (var item in $scope.items) {
       (function (item) {
@@ -100,6 +104,7 @@ App.controller('mainController', function($scope, $http) {
           }
 
           if ($scope.items[item].targetPrice > price) {
+            playSound();
             alert("PRICE DROP! " + $scope.items[item].name + " costs " + price);
           }
           $scope.items[item].currentPrice = price;
