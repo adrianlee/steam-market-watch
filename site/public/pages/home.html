@@ -12,7 +12,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="item in items">
+        <tr ng-repeat="item in items" ng-class="{ 'success': item.targetPrice > item.currentPrice, 'warning': item.targetPrice + item.currentPrice/5 > item.currentPrice }">
           <td><a ng-href="{{item.url}}" target="_blank">{{item.name}}</a></td>
           <td>{{item.targetPrice | currency}}</td>
           <td>{{item.currentPrice | currency}}</td>
