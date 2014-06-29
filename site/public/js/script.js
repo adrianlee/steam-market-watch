@@ -69,7 +69,7 @@ App.controller('mainController', function($scope, $http) {
         // save items list to localStorage
         save();
       } else {
-        alert("Unable to add item to list. Check your URL.")
+        alert("Unable to add item to list. Check your URL or TRY AGAIN");
       }
     });
     
