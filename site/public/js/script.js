@@ -95,6 +95,9 @@ App.controller('mainController', function($scope, $http) {
     for (var item in $scope.items) {
       (function (item) {
         requestUrl($scope.items[item].url, function (price) {
+          if ($scope.items[item].targetPrice > price) {
+            alert("PRICE DROP! " + $scope.items[item].name + " costs " + price);
+          }
           $scope.items[item].currentPrice = price;
           $scope.items[item].updated = new Date();
           save();
