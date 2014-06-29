@@ -80,7 +80,11 @@ function convertPrice(price) {
 
   if (price.indexOf("pуб") > -1) {
     return round(unformatedPrice * 0.030);
-  } 
+  }
+
+  if (price.indexOf("R$") > -1) {
+    return round(unformatedPrice * 0.45);
+  }
 }
 
 function round(num) {
