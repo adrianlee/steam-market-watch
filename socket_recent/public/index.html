@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+  <!--[if IE]>
+    <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+</head>
+
+<body id="home">
+  <div id="items" class="container">
+    <div class="page-header">
+      <h1>Bargin Listings <small>A Realtime market watch for CS:GO</small></h1>
+    </div>
+    <div class="panel panel-black">
+      <div class="panel-heading">
+        <h3 class="panel-title">Filters</h3>
+      </div>
+      <div class="panel-body">
+        <button type="button" id="checkbox" class="btn btn-default" onclick="handleClick()">Show Holy Crap Items Only</button>
+      </div>
+    </div>
+
+    <div class="panel panel-black">
+      <div class="panel-heading">
+        <h3 class="panel-title">Most Recent</h3>
+      </div>
+      <div class="panel-body">
+        <table class="table table-condensed table-hover">
+          <thead>
+            <tr>
+              <th>Script</th>
+              <th>Item</th>
+              <th>Listed Price</th>
+              <th>Market Low</th>
+              <th>Average*</th>
+              <th>Difference*</th>
+            </tr>
+          </thead>
+          <tbody id="table">
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <small>* - These sources are not accurate. They are a moving window average of 20 most recent listing prices without filtering outliers</small>
+        
+    
+  </div>
+  <audio id="audiotag1" src="holy_crap.wav" preload="auto"></audio>
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.1.1.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  <script src="/moment.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/superagent.js"></script>
+  <script>
+    var show = false;
+    function handleClick() {
+      show = !show;
+
+      $("#checkbox").toggleClass("btn-primary");
+
+      $("#table").find("tr").each(function () {
+        if ($(this).hasClass("info"))
+          return;
+
+        if (show) {
+          $(this).hide();
+        } else {
+          $(this).show();
+        }
+      });
+    }
+
+    var table = document.getElementById("table");
+    var socket = io.connect('http://localhost:3000');
+    
+    var filter = ["StatTrak", "Knife", "AK", "M4", "AWP", "Fade"];
+    var ignore = ["Sticker", "Case"];
+
+    socket.emit('filter', filter);
+
+    socket.on('news', function (data) {
+      data = JSON.parse(data);
+
+      if (!data)
+        return;
+      
+      console.log(data);
+
+      for (var i in data) {
+        if (!data[i])
+          return;
+
+        var row = table.insertRow(0);
+        var cell0 = row.insertCell(0);
+        var cell1 = row.insertCell(1);
+        var cell2 = row.insertCell(2);
+        var cell3 = row.insertCell(3);
+        var cell4 = row.insertCell(4);
+        var cell5 = row.insertCell(5);
+
+
+        var price = (parseFloat(data[i]["converted_price"]) + parseFloat(data[i]["converted_fee"])) / 100;
+        var average = getAverage(data[i]["average_price"]) / 100;
+        var current_price = parseFloat(data[i]["current_price"]) / 100;
+
+        if (current_price != 0) {
+          if (current_price > 1 && (price - current_price) <= current_price * 0.2 * -1) {
+            row.className = "info";
+            playSound();
+          } else {
+            if (price < current_price) {
+              row.className = "warning";
+            }
+          }
+        } else {
+          if (price - average <= average * 0.2 * -1) {
+            row.className = "warning";
+            // playSound();
+          }
+        }
+
+        if (show)
+          $(row).hide();
+
+        cell0.innerHTML = "<a href=\"javascript:BuyMarketListing('listing', '" + data[i].listingid + "', 730, '2', '" + data[i].id + "')\">buy script</a>";
+        cell1.innerHTML = "<a href='http://steamcommunity.com/market/listings/730/" + data[i]["market_name"] +"' target='_blank' title='" + JSON.stringify(data[i]) + "'>" + data[i]["market_name"] + "</a>";
+        cell2.innerHTML = price;
+        cell3.innerHTML = current_price;
+        cell4.innerHTML = average.toFixed(2) +  " [" +  data[i]["average_price"].length + "]";
+        cell5.innerHTML = (price - average).toFixed(2);
+      }
+      // socket.emit('my other event', { my: 'data' });
+    });
+
+
+    function getAverage(prices) {
+      var sum = 0;
+      for(var i=0; i < prices.length; i++) {
+          sum += parseFloat(prices[i], 10);
+      }
+
+      return sum / prices.length;
+    }
+
+    function playSound() {
+      document.getElementById('audiotag1').play();
+    }
+  </script>
+  <script>
+    var r = superagent
+    r
+      .get('http://steamcommunity.com/market/recent?country=US&language=english&currency=1')
+      .end(function(res) {
+        if (res.ok) {
+          console.log('yay got ' + JSON.stringify(res.body));
+        } else {
+          console.log('Oh no! error ' + res.text);
+        }
+      });
+  </script>
+</body>
+</html>
