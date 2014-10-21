@@ -46,7 +46,24 @@
       </div>
     </div>
     <small>* - These sources are not accurate. They are a moving window average of 20 most recent listing prices without filtering outliers</small>
-        
+    
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+          </div>
+          <div class="modal-body">
+            <textarea type="text" id="copyPaste" onClick="this.select();" value="" rows="15" style="height: 100%; width: 100%;"></textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
     
   </div>
   <audio id="audiotag1" src="holy_crap.wav" preload="auto"></audio>
@@ -75,7 +92,7 @@
     }
 
     var table = document.getElementById("table");
-    var socket = io.connect('http://localhost:3000');
+    var socket = io.connect('http://bl.bojap.com');
     
     var filter = ["StatTrak", "Knife", "AK", "M4", "AWP", "Fade"];
     var ignore = ["Sticker", "Case"];
@@ -123,18 +140,26 @@
           }
         }
 
-        if (show)
+        if (show && row.className != "info")
           $(row).hide();
 
-        cell0.innerHTML = "<a href=\"javascript:BuyMarketListing('listing', '" + data[i].listingid + "', 730, '2', '" + data[i].id + "')\">buy script</a>";
+        cell0.innerHTML = "<a data-toggle=\"modal\" data-target=\"#myModal\" onclick=\"generateBuyScript('" + data[i].listingid + "', '" + data[i].converted_price + "', '" + data[i].converted_fee + "')\">buy script</a>";
         cell1.innerHTML = "<a href='http://steamcommunity.com/market/listings/730/" + data[i]["market_name"] +"' target='_blank' title='" + JSON.stringify(data[i]) + "'>" + data[i]["market_name"] + "</a>";
         cell2.innerHTML = price;
         cell3.innerHTML = current_price;
         cell4.innerHTML = average.toFixed(2) +  " [" +  data[i]["average_price"].length + "]";
-        cell5.innerHTML = (price - average).toFixed(2);
+        cell5.innerHTML = current_price ? (price - current_price).toFixed(3) : (price - average).toFixed(2);
       }
       // socket.emit('my other event', { my: 'data' });
     });
+
+    function generateBuyScript(listingid, converted_price, converted_fee) {
+      $("#copyPaste").val('(function(e,t,n){console.log(g_sessionID,"to buy listing",e,"at",parseInt(t)+parseInt(n));$J.ajax({url:"https://steamcommunity.com/market/buylisting/"+e,type:"POST",data:{sessionid:g_sessionID,currency:1,subtotal:parseInt(t),fee:parseInt(n),total:parseInt(t)+parseInt(n)},crossDomain:true,xhrFields:{withCredentials:true}}).done(function(e){console.log("YAY!",e);BuyItemDialog.OnSuccess({responseJSON:e})}).fail(function(e){console.log("FAILED",e.responseJSON.message);var t=$J.parseJSON(e.responseText);BuyItemDialog.OnFailure({responseJSON:t})})})(\"' + listingid + '\", \"' + converted_price + '\", \"' + converted_fee + '\")');
+
+      // $("#copyPaste").mouseup(function(e){
+      //   e.preventDefault();
+      // });
+    }
 
 
     function getAverage(prices) {

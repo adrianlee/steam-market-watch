@@ -11,7 +11,7 @@ var databaseCurrentPrice = {};
 var lastItems = [];
 var filter = [];
 
-server.listen(3000);
+server.listen(4000);
 
 app.use(express.static(__dirname + '/public'));
 
